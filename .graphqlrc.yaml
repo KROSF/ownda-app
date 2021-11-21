@@ -1,0 +1,41 @@
+overwrite: true
+schema: 'http://localhost:3000/graphql'
+documents: 'src/urql/graphql/**/*.gql'
+extensions:
+  codegen:
+    overwrite: true
+    hooks:
+      afterAllFileWrite:
+        - prettier --write
+    config:
+      gqlImport: 'urql#gql'
+      strictScalars: true
+      skipTypename: true
+      useTypeImports: true
+      enumsAsConst: true
+      preResolveTypes: false
+      maybeValue: T | null | undefined
+      scalars:
+        ISO8601DateTime: string
+    generates:
+      src/generated/schema.json:
+        plugins:
+          - urql-introspection
+        config:
+          useTypeImports: false
+      src/generated/schema.ts:
+        plugins:
+          - add: &notModify
+              content: '/* THIS IS A GENERATED FILE - DO NOT MODIFY */'
+          - 'typescript'
+      src/generated:
+        preset: near-operation-file
+        presetConfig:
+          baseTypesPath: schema.ts
+          importTypesNamespace: Schema
+          extension: '.ts'
+          folder: ../../../generated/
+        plugins:
+          - add: *notModify
+          - 'typescript-operations'
+          - 'typescript-urql'

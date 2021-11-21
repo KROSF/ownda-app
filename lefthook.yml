@@ -1,0 +1,17 @@
+commit-msg:
+  commands:
+    commitlint:
+      run: yarn commitlint -e
+
+pre-commit:
+  parallel: true
+  commands:
+    tsc:
+      glob: '*.{js,jsx,ts,tsx}'
+      run: yarn tsc --noEmit {staged_files}
+    eslint:
+      glob: '*.{js,jsx,ts,tsx}'
+      run: yarn eslint {staged_files}
+    prettier-java:
+      glob: '*.java'
+      run: yarn prettier --write {staged_files}
